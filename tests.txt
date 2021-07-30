@@ -1,0 +1,14 @@
+Sprawdzenie warunków brzegowych X, Y, Z = 0 i porównanie odczytów
+
+Wyznaczenie dokładnej pozycji punktów w przestrzeni za pomocą metra i porównanie
+
+Przesuwanie tagu względem płytek (zmiana x,y 30 30 cm) i liczenie względnego błędu dla trzech, czterech anchorów oraz wewnątrz przestrzeni i poza nią
+
+odtworzenie trajektorii chodu/ biegu wzdłuż korytarza
+
+^ To samo dla wielu tagów
+
+Rzucanie tagu(?!) zawieszenie tagu na lince i "bujanie"
+
+Bujanie na lince dobry pomysł!!! Wahadło
+
