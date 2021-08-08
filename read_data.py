@@ -8,7 +8,7 @@ from pynput import keyboard
 formatter = logging.Formatter('%(asctime)s %(message)s')
 
 PLOTTING = False
-log_filename = "running_7.txt"
+log_filename = "testing 2 tags.txt"
 
 
 def setup_logger(file_name):
@@ -43,7 +43,7 @@ listener.start()
 logger = setup_logger(log_filename)
 logger.info("STOP *")
 
-DWM = serial.Serial(port='COM5', baudrate=115200)
+DWM = serial.Serial(port='COM8', baudrate=115200)
 DWM.write("reset\r".encode())
 time.sleep(1)
 DWM.write('\r\r'.encode())
@@ -73,7 +73,7 @@ while True:
             y = float(parse[4])
             z = float(parse[5])
             quality = float(parse[6])
-            logger.info("position: {:2.2f} {:2.2f} {:2.2f} quality: {:2.2f}".format(x, y, z, quality))
+            logger.info("tag: {} position: {:2.2f} {:2.2f} {:2.2f} quality: {:2.2f}".format(module_id, x, y, z, quality))
             if PLOTTING:
                 # ShReg.append((x, y))
                 plt.axis(axis)

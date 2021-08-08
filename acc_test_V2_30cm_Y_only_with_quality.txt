@@ -1,5 +1,3 @@
-cały korytarz w jednej linii przesuwając tag w osi Y wzdłuż korytarza o -30 centymetrów
-rozstawienie 4 anchorów na siatce x:2.9 metra y:10.82 metra z:2.4 metra
 2021-07-29 09:31:45,831 STOP *
 2021-07-29 09:31:47,837 position: nan nan nan quality: 0.00
 2021-07-29 09:31:47,975 position: nan nan nan quality: 0.00
