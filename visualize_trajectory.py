@@ -6,8 +6,8 @@ from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
 import PySimpleGUI as sg
 
-filename = 'testing 2 tags.txt'
-NUMBER_OF_TAGS = 2
+filename = 'running_7.txt'
+NUMBER_OF_TAGS = 1
 data_valid = False
 
 matplotlib.use("TkAgg")
@@ -92,16 +92,16 @@ for i in range(len(list_x)):
 	if k >= int(len(list_x)/NUMBER_OF_TAGS):
 		break
 
-print(list_timestamp)
+# print(list_timestamp)
 # print(list_of_tag_positions)
-# print(list_of_tag_names)
+print(list_of_tag_names)
 # print(len(list_x)/2)
 
-TAIL = 10
+TAIL = 20
 
 layout = [[sg.Canvas(key='-CANVAS-')],
-		[sg.Slider(range=(1, 30), default_value=1, size=(20, 30), orientation='h', key='smooth_slider', enable_events=True)],
-		[sg.Slider(range=(TAIL, int(len(list_x)/NUMBER_OF_TAGS)-TAIL), default_value=TAIL, size=(20, 30), orientation='h', key='position_slider', enable_events=True)],
+		[sg.Text("Smooth slider"), sg.Slider(range=(1, 30), default_value=1, size=(20, 30), orientation='h', key='smooth_slider', enable_events=True)],
+		[sg.Text("Position slider"), sg.Slider(range=(TAIL, int(len(list_x)/NUMBER_OF_TAGS)-TAIL), default_value=TAIL, size=(20, 30), orientation='h', key='position_slider', enable_events=True)],
 		[sg.Checkbox('Show full trajectory', default=True, key='full_traj')],
 		[sg.Checkbox('3D plot', default=True, key='3d_plot')],
 		[sg.Button("Show")],
@@ -120,7 +120,7 @@ while True:
 	if event == 'smooth_slider':
 		smoothing_factor = int(values['smooth_slider'])
 
-	fig = Figure(figsize=(10, 7))
+	fig = Figure(figsize=(11, 8))
 	if values['3d_plot']:
 		ax = fig.add_subplot(111, projection='3d')
 	else:
@@ -147,8 +147,6 @@ while True:
 			sz = smooth(sz, smoothing_factor)
 
 			if values['3d_plot']:
-				if event == 'position_slider':
-					pos = int(values['position_slider'])
 
 				if values['full_traj']:
 
@@ -157,7 +155,8 @@ while True:
 					z = sz
 
 				else:
-
+					if event == 'position_slider':
+						pos = int(values['position_slider'])
 					x = [sx[i] for i in range(pos-int(TAIL/2), pos+int(TAIL/2))]
 					y = [sy[i] for i in range(pos-int(TAIL/2), pos+int(TAIL/2))]
 					z = [sz[i] for i in range(pos-int(TAIL/2), pos+int(TAIL/2))]
@@ -165,36 +164,48 @@ while True:
 					ax.text(x=0, y=0, z=0, s=time)
 
 				ax.plot(x, y, z, '.--', linewidth=0.5)
-				ax.set_xlabel('Oś X - szerokość [m]')
-				ax.set_ylabel('Oś Y - długość [m]')
-				ax.set_zlabel('Oś Z - wysokość [m]')
+				ax.set_xlabel('Oś X - szerokość [m]', fontsize='xx-large')
+				ax.set_ylabel('Oś Y - długość [m]', fontsize='xx-large')
+				ax.set_zlabel('Oś Z - wysokość [m]', fontsize='xx-large')
 				ax.set_xlim3d(0, 3)
 				ax.set_ylim3d(-1, 12)
 				ax.set_zlim3d(0, 2)
 				ax.legend(legend)
 				draw_figure_w_toolbar(main_window['-CANVAS-'].TKCanvas, fig)
 				main_window.Refresh()
-			else:
+
+			else:  # 2D plot
 				# fig = Figure(figsize=(10, 7))
-				ax.plot(sx, sy, '.--')
+
 				speeds = list()
 
-				for i in range(len(sx) - 1):  # speed calculation
-					x1 = sx[i]
-					x2 = sx[i + 1]
+				if values['full_traj']:
+					x = sx
+					y = sy
+
+				else:
+					if event == 'position_slider':
+						pos = int(values['position_slider'])
+					x = [sx[i] for i in range(pos - int(TAIL / 2), pos + int(TAIL / 2))]
+					y = [sy[i] for i in range(pos - int(TAIL / 2), pos + int(TAIL / 2))]
+					time = list_timestamp[NUMBER_OF_TAGS * pos]
+					ax.text(x=0, y=0, s=time)
+
+				ax.plot(x, y, '.--')
+
+				for i in range(len(x) - 1):  # speed calculation
+					x1 = x[i]
+					x2 = x[i + 1]
 					speed_x = (x2 - x1) / 0.1
-					y1 = sy[i]
-					y2 = sy[i + 1]
+					y1 = y[i]
+					y2 = y[i + 1]
 					speed_y = (y2 - y1) / 0.1
-					z1 = sz[i]
-					z2 = sz[i + 1]
-					speed_z = (z2 - z1) / 0.1
 					# print("Speed vector: (x,y)=({:2.2f},{:2.2f}) m/s".format(speed_x, speed_y))
 
-					speeds.append((speed_x, speed_y, speed_z))
+					speeds.append((speed_x, speed_y))
 
 					origin = np.array([x1, y1])
-					ax.quiver(*origin, speed_x, speed_y, scale=100, color='red')
+					ax.quiver(*origin, speed_x, speed_y, scale=150, color='red')
 
 				legend = []
 				for tag_name in list_of_tag_names:
@@ -202,9 +213,10 @@ while True:
 						legend.append(tag_name)
 				legend.append("Speed vector")
 				ax.legend(legend)
-				# plt.axis([-3, 5, -3, 18])
-				# ax.xlabel("Oś X - szerokość [m]", fontsize='xx-large')
-				# ax.ylabel("Oś Y - długość [m]", fontsize='xx-large')
+				ax.set_xlim(-1, 4)
+				ax.set_ylim(-2, 15)
+				ax.set_xlabel("Oś X - szerokość [m]", fontsize='xx-large')
+				ax.set_ylabel("Oś Y - długość [m]", fontsize='xx-large')
 				draw_figure_w_toolbar(main_window['-CANVAS-'].TKCanvas, fig)
 				main_window.Refresh()
 	if tag_selected is False:
