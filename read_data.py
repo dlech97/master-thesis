@@ -8,7 +8,7 @@ from pynput import keyboard
 formatter = logging.Formatter('%(asctime)s %(message)s')
 
 PLOTTING = False
-log_filename = "testing 2 tags.txt"
+log_filename = "pendulum_5.txt"
 
 
 def setup_logger(file_name):
@@ -27,6 +27,7 @@ def on_press(key):
             print("Stopping")
             logger.info("STOP *")
         if key.char == "r":
+            print("RESUMING! \n\n\n")
             logger.info("RESUME *")
     except AttributeError:
         print('special key {} pressed'.format(key.char))
@@ -43,7 +44,7 @@ listener.start()
 logger = setup_logger(log_filename)
 logger.info("STOP *")
 
-DWM = serial.Serial(port='COM8', baudrate=115200)
+DWM = serial.Serial(port='COM5', baudrate=115200)
 DWM.write("reset\r".encode())
 time.sleep(1)
 DWM.write('\r\r'.encode())
@@ -61,10 +62,10 @@ p_cnt = 0
 while True:
     try:
         line = DWM.readline()
-        if PLOTTING:
-            p_cnt += 1
-            if p_cnt % 3:
-                continue
+        # if PLOTTING:
+        #     p_cnt += 1
+        #     if p_cnt % 3:
+        #         continue
         if line:
             parse = line.decode("utf-8").split(",")
             print(parse)

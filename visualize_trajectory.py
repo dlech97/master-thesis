@@ -6,7 +6,7 @@ from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
 import PySimpleGUI as sg
 
-filename = 'running_7.txt'
+filename = 'pendulum_5.txt'
 NUMBER_OF_TAGS = 1
 data_valid = False
 
@@ -97,11 +97,11 @@ for i in range(len(list_x)):
 print(list_of_tag_names)
 # print(len(list_x)/2)
 
-TAIL = 20
+TAIL = 50
 
 layout = [[sg.Canvas(key='-CANVAS-')],
-		[sg.Text("Smooth slider"), sg.Slider(range=(1, 30), default_value=1, size=(20, 30), orientation='h', key='smooth_slider', enable_events=True)],
-		[sg.Text("Position slider"), sg.Slider(range=(TAIL, int(len(list_x)/NUMBER_OF_TAGS)-TAIL), default_value=TAIL, size=(20, 30), orientation='h', key='position_slider', enable_events=True)],
+		[sg.Text("Smooth slider"), sg.Slider(range=(1, 50), default_value=10, size=(20, 30), orientation='h', key='smooth_slider', enable_events=True)],
+		[sg.Text("Position slider"), sg.Slider(range=(TAIL, int(len(list_x)/NUMBER_OF_TAGS)-TAIL), resolution=int(TAIL/2), default_value=TAIL, size=(20, 30), orientation='h', key='position_slider', enable_events=True)],
 		[sg.Checkbox('Show full trajectory', default=True, key='full_traj')],
 		[sg.Checkbox('3D plot', default=True, key='3d_plot')],
 		[sg.Button("Show")],
@@ -109,7 +109,7 @@ layout = [[sg.Canvas(key='-CANVAS-')],
 
 main_window = sg.Window(title="GUI", layout=layout, finalize=True, location=(0, 0))
 
-smoothing_factor = 1
+smoothing_factor = 10
 pos = 0
 
 while True:
@@ -120,7 +120,7 @@ while True:
 	if event == 'smooth_slider':
 		smoothing_factor = int(values['smooth_slider'])
 
-	fig = Figure(figsize=(11, 8))
+	fig = Figure(figsize=(11, 5))
 	if values['3d_plot']:
 		ax = fig.add_subplot(111, projection='3d')
 	else:
@@ -167,9 +167,9 @@ while True:
 				ax.set_xlabel('Oś X - szerokość [m]', fontsize='xx-large')
 				ax.set_ylabel('Oś Y - długość [m]', fontsize='xx-large')
 				ax.set_zlabel('Oś Z - wysokość [m]', fontsize='xx-large')
-				ax.set_xlim3d(0, 3)
-				ax.set_ylim3d(-1, 12)
-				ax.set_zlim3d(0, 2)
+				# ax.set_xlim3d(0, 3)
+				# ax.set_ylim3d(-1, 12)
+				# ax.set_zlim3d(0, 2.5)
 				ax.legend(legend)
 				draw_figure_w_toolbar(main_window['-CANVAS-'].TKCanvas, fig)
 				main_window.Refresh()
